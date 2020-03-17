@@ -4,25 +4,26 @@
 
 using namespace std;
 /*
-1-365
 //val coverages = List( Cov(1, 20), Cov(21, 30), Cov(15, 25), Cov(28, 40), Cov(50, 60), Cov(61, 200)
-1-20 21- 30 40  50 60 61 200
- 
 */
 
 class Coverage 
 { 
     public:	
     
+        //default constructor
         Coverage():m_startDay(0),m_endDay(0) {}
     
+        //Constructor
         Coverage(int start, int end):m_startDay(start),m_endDay(end) {}
 	
+	    //Copy constructor
         Coverage(const Coverage& cov) {
             m_startDay = cov.m_startDay;
              m_endDay = cov.m_endDay;
         }
 	
+	    //Setters and getters
         int getStartDay() {return m_startDay;}
         void setStartDay(int start) {m_startDay = start;}
         
@@ -31,7 +32,10 @@ class Coverage
         
         int getCoverageInterval() { return m_endDay - m_startDay;}
         
-        friend bool operator < (Coverage const &c1, Coverage const &c2) {return c1.m_startDay < c2.m_startDay ;}
+        //Operators
+        friend bool operator < (Coverage const &c1, Coverage const &c2) {
+            return c1.m_startDay < c2.m_startDay ;
+        }
         
         Coverage& operator=(const Coverage& c) {
             this->m_startDay = c.m_startDay;
@@ -46,14 +50,11 @@ class Coverage
 }; 
   
 
-  
-
-// The main function that takes a list of coverages, merges 
-// overlapping coverages and prints the result 
+// The main function that takes a list of coverages, flattering overlapping coverages and returns the largest one 
 Coverage getLongestCoverage(list<Coverage>& coverages) 
 { 
       Coverage longestCoverage;
-    // Test if the given set has at least one interval 
+    // if we have at least one coverage interval
     if (coverages.size() <= 0) 
         return longestCoverage; 
   
@@ -63,13 +64,13 @@ Coverage getLongestCoverage(list<Coverage>& coverages)
     // Create an empty stack of coverages 
     stack<Coverage> s; 
   
-    // sort the coverages in increasing order of start time (will use our < operator)
+    // sort the coverages in increasing order of start time (will use our < operator) O(nlogn)
     coverages.sort();
       // push the first Coverage to stack 
     s.push(*coverages.begin()); 
     
     list<Coverage>::iterator it;
-     // Start from the next interval and merge if necessary 
+     // Start from the next interval and merge if necessary  O(n)
    for (it=coverages.begin(); it!=coverages.end(); ++it)
     { 
         // get Coverage from stack top 
@@ -81,8 +82,7 @@ Coverage getLongestCoverage(list<Coverage>& coverages)
             //store the new coverage into the top so we will be able to compare it later
             top = (*it); 
         }
-        // Otherwise update the ending date of top if ending of current 
-        // Coverage is more 
+        // Otherwise update the ending date of top if ending of current coverage is more 
         else if (top.getEndDay() < (*it).getEndDay())  { 
             top.setEndDay((*it).getEndDay()); 
             //remove from top
@@ -96,15 +96,6 @@ Coverage getLongestCoverage(list<Coverage>& coverages)
         }
     } 
   
-    // Print contents of stack 
-    cout << "Flatten Coverages are: "; 
-    while (!s.empty()) 
-    { 
-        Coverage t = s.top(); 
-        cout << "[" << t.getStartDay() << "," << t.getEndDay() << "] "; 
-        s.pop(); 
-    }     
-    cout << endl;
     return longestCoverage; 
 } 
 
@@ -113,5 +104,5 @@ int main(void){
    list<Coverage> inputCoverages = {Coverage(1, 20), Coverage(21, 30), Coverage(15, 25), Coverage(28, 40), Coverage(50, 60), Coverage(61, 200)};
    // input END
   Coverage longestCoverage = getLongestCoverage(inputCoverages);
-  cout << "Longest Coverage is " << longestCoverage.getCoverageInterval() << " from " << longestCoverage.getStartDay() << " To " << longestCoverage.getEndDay() << endl;
+  cout << "Longest Coverage is " << longestCoverage.getCoverageInterval() << " days. From " << longestCoverage.getStartDay() << " To " << longestCoverage.getEndDay() << endl;
 }
