@@ -104,5 +104,5 @@ int main(void){
    list<Coverage> inputCoverages = {Coverage(1, 20), Coverage(21, 30), Coverage(15, 25), Coverage(28, 40), Coverage(50, 60), Coverage(61, 200)};
    // input END
   Coverage longestCoverage = getLongestCoverage(inputCoverages);
-  cout << "Longest Coverage is " << longestCoverage.getCoverageInterval() << " days. From " << longestCoverage.getStartDay() << " To " << longestCoverage.getEndDay() << endl;
+  cout << longestCoverage.getStartDay() << "," << longestCoverage.getEndDay() << endl;
 }
