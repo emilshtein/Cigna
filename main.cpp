@@ -60,72 +60,58 @@ Coverage getLongestCoverage(list<Coverage>& coverages)
    //sotre the longest coverage in this memebr
     longestCoverage = *coverages.begin();
   
-    // Create an empty stack of intervals 
+    // Create an empty stack of coverages 
     stack<Coverage> s; 
   
-    // sort the intervals in increasing order of start time 
+    // sort the coverages in increasing order of start time (will use our < operator)
     coverages.sort();
-    
-     list<Coverage>::iterator it;
-   // push the first Coverage to stack 
+      // push the first Coverage to stack 
     s.push(*coverages.begin()); 
-  
- 
+    
+    list<Coverage>::iterator it;
      // Start from the next interval and merge if necessary 
    for (it=coverages.begin(); it!=coverages.end(); ++it)
     { 
         // get Coverage from stack top 
         Coverage top(s.top()); 
-  
         // if current Coverage is not overlapping with stack top, 
         // push it to the stack 
-        if (top.getEndDay() <= (*it).getStartDay())  {
+        if (top.getEndDay() + 1 < (*it).getStartDay())  {
             s.push(*it); 
-            //if new coverage interval bigger then current longest one
-            if (longestCoverage.getCoverageInterval() < (*it).getCoverageInterval()) {
-                longestCoverage.setStartDay((*it).getStartDay());
-                longestCoverage.setEndDay((*it).getEndDay());
-            }
+            //store the new coverage into the top so we will be able to compare it later
+            top = (*it); 
         }
         // Otherwise update the ending date of top if ending of current 
         // Coverage is more 
-        else if (top.getEndDay() <= (*it).getEndDay()) 
-        { 
+        else if (top.getEndDay() < (*it).getEndDay())  { 
             top.setEndDay((*it).getEndDay()); 
+            //remove from top
             s.pop(); 
+            //add back
             s.push(top); 
-            //if new coverage interval bigger then current longest one
-             //if new coverage interval bigger then current longest one
-            if (longestCoverage.getCoverageInterval() < top.getCoverageInterval()) {
-                longestCoverage.setStartDay(top.getStartDay());
-                longestCoverage.setEndDay(top.getEndDay());
-            }
         } 
+         //if new coverage interval bigger then current longest one
+        if (longestCoverage.getCoverageInterval() < top.getCoverageInterval()) {
+            longestCoverage = top;
+        }
     } 
   
     // Print contents of stack 
-    cout << "\n The Merged Coverages are: "; 
+    cout << "Flatten Coverages are: "; 
     while (!s.empty()) 
     { 
         Coverage t = s.top(); 
         cout << "[" << t.getStartDay() << "," << t.getEndDay() << "] "; 
         s.pop(); 
     }     
+    cout << endl;
     return longestCoverage; 
 } 
 
 int main(void){
-    // Your code here!
-    list<Coverage>::iterator it;
-    cout << "Hello!" << std::endl;
+    //input section
    list<Coverage> inputCoverages = {Coverage(1, 20), Coverage(21, 30), Coverage(15, 25), Coverage(28, 40), Coverage(50, 60), Coverage(61, 200)};
-   
-  
+   // input END
   Coverage longestCoverage = getLongestCoverage(inputCoverages);
   cout << "Longest Coverage is " << longestCoverage.getCoverageInterval() << " from " << longestCoverage.getStartDay() << " To " << longestCoverage.getEndDay() << endl;
 }
-
-
-
-
-
