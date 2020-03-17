@@ -13,6 +13,9 @@ using namespace std;
 class Coverage 
 { 
     public:	
+    
+        Coverage():m_startDay(0),m_endDay(0) {}
+    
         Coverage(int start, int end):m_startDay(start),m_endDay(end) {}
 	
         Coverage(const Coverage& cov) {
@@ -29,6 +32,13 @@ class Coverage
         int getCoverageInterval() { return m_endDay - m_startDay;}
         
         friend bool operator < (Coverage const &c1, Coverage const &c2) {return c1.m_startDay < c2.m_startDay ;}
+        
+        Coverage& operator=(const Coverage& c) {
+            this->m_startDay = c.m_startDay;
+            this->m_endDay = c.m_endDay;
+            return *this;
+        }
+       
     private:
         int m_startDay;
         int m_endDay; 
@@ -42,9 +52,13 @@ class Coverage
 // overlapping coverages and prints the result 
 Coverage getLongestCoverage(list<Coverage>& coverages) 
 { 
+      Coverage longestCoverage;
     // Test if the given set has at least one interval 
     if (coverages.size() <= 0) 
-        return; 
+        return longestCoverage; 
+  
+   //sotre the longest coverage in this memebr
+    longestCoverage = *coverages.begin();
   
     // Create an empty stack of intervals 
     stack<Coverage> s; 
@@ -56,8 +70,7 @@ Coverage getLongestCoverage(list<Coverage>& coverages)
    // push the first Coverage to stack 
     s.push(*coverages.begin()); 
   
-  //sotre the longest coverage in this memebr
-  Coverage longestCoverage(*coverages.begin());
+ 
      // Start from the next interval and merge if necessary 
    for (it=coverages.begin(); it!=coverages.end(); ++it)
     { 
@@ -111,6 +124,7 @@ int main(void){
   Coverage longestCoverage = getLongestCoverage(inputCoverages);
   cout << "Longest Coverage is " << longestCoverage.getCoverageInterval() << " from " << longestCoverage.getStartDay() << " To " << longestCoverage.getEndDay() << endl;
 }
+
 
 
 
